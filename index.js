@@ -1,45 +1,28 @@
-import * as http from 'http';
-import { readFile } from 'fs/promises'
-import path from 'path';
-import { fileURLToPath } from 'url';
+const express = require('express')
+const app = express()
+const PORT = 3000
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename)
+app.set('view engine', 'html')
 
-const host = '127.0.0.1';
-const port = 8080;
-let route;
+app.get('/', (req, res) => {
+    res.render('index')
+})
 
-const requestListener = function (req, res) {
-    if(req.url !== "/favicon.ico") {
-        switch (req.url) {
-            case "/":
-                route = "/index.html"
-                break;
+app.get('/about', (req, res) => {
+    res.render('about')
+})
 
-            case "/about":
-                route = "/about.html"
-                break;
+app.get('/contact-me', (req, res) => {
+    res.render('contact-me')
+})
 
-            case "/contact-me":
-                route = "/contact-me.html"
-                break;
+app.all('*', (req, res) => {
+    res.render('404')
+})
 
-            default:
-                route = "/404.html"
-        }
-    
-        readFile(__dirname + route)
-            .then(contents => {
-                res.setHeader("Content-Type", "text/html")
-                res.writeHead(200);
-                res.end(contents);
-            })
-    }
-};
 
-const server = http.createServer(requestListener);
 
-server.listen(port, host, () => {
-    console.log('server is running')
+
+app.listen(PORT, () => {
+    console.log(`Example app listening on port ${PORT}`)
 })
